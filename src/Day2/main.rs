@@ -17,7 +17,11 @@ struct Submarine {
 
 impl Default for Submarine {
     fn default() -> Self {
-        Self { horizontal_pos: 0, vertical_pos: 0, aim_pos:0 }
+        Self {
+            horizontal_pos: 0,
+            vertical_pos: 0,
+            aim_pos: 0,
+        }
     }
 }
 
@@ -43,33 +47,29 @@ impl FromStr for Direction {
 
 fn main() -> std::io::Result<()> {
     let contents = include_str!("input.txt").lines();
-    let directions = contents
-        .map(|line| line.parse::<Direction>().expect("Error parsing input"));
+    let directions = contents.map(|line| line.parse::<Direction>().expect("Error parsing input"));
 
-    let sub_part1 = directions
-        .clone()
-        .fold(Submarine::default(), |mut sub, direction| {
-            match direction {
-                Direction::Up(v) => sub.vertical_pos -= v,
-                Direction::Down(v) => sub.vertical_pos += v,
-                Direction::Forward(v) => sub.horizontal_pos += v,
-            };
-            sub
-        });
+    let mut sub_part1 = Submarine::default();
+    for dir in directions.clone() {
+        match dir {
+            Direction::Up(v) => sub_part1.vertical_pos -= v,
+            Direction::Down(v) => sub_part1.vertical_pos += v,
+            Direction::Forward(v) => sub_part1.horizontal_pos += v,
+        };
+    }
     println!("{}", sub_part1.horizontal_pos * sub_part1.vertical_pos);
 
-    let sub_part2 = directions
-        .fold(Submarine::default(), |mut sub, direction| {
-            match direction {
-                Direction::Up(v) => sub.aim_pos -= v,
-                Direction::Down(v) => sub.aim_pos += v,
-                Direction::Forward(v) => {
-                    sub.horizontal_pos += v;
-                    sub.vertical_pos += sub.aim_pos * v;
-                }
-            };
-            sub
-        });
+    let mut sub_part2 = Submarine::default();
+    for dir in directions {
+        match dir {
+            Direction::Up(v) => sub_part2.aim_pos -= v,
+            Direction::Down(v) => sub_part2.aim_pos += v,
+            Direction::Forward(v) => {
+                sub_part2.horizontal_pos += v;
+                sub_part2.vertical_pos += sub_part2.aim_pos * v;
+            }
+        };
+    }
     println!("{}", sub_part2.horizontal_pos * sub_part2.vertical_pos);
     Ok(())
 }
