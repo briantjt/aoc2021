@@ -47,10 +47,12 @@ impl FromStr for Direction {
 
 fn main() -> std::io::Result<()> {
     let contents = include_str!("input.txt").lines();
-    let directions = contents.map(|line| line.parse::<Direction>().expect("Error parsing input"));
+    let directions: Vec<Direction> = contents
+        .map(|line| line.parse::<Direction>().expect("Error parsing input"))
+        .collect();
 
     let mut sub_part1 = Submarine::default();
-    for dir in directions.clone() {
+    for dir in directions.iter() {
         match dir {
             Direction::Up(v) => sub_part1.vertical_pos -= v,
             Direction::Down(v) => sub_part1.vertical_pos += v,
@@ -60,7 +62,7 @@ fn main() -> std::io::Result<()> {
     println!("{}", sub_part1.horizontal_pos * sub_part1.vertical_pos);
 
     let mut sub_part2 = Submarine::default();
-    for dir in directions {
+    for dir in directions.iter() {
         match dir {
             Direction::Up(v) => sub_part2.aim_pos -= v,
             Direction::Down(v) => sub_part2.aim_pos += v,
