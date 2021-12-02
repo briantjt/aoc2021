@@ -18,12 +18,11 @@ fn main() -> std::io::Result<()> {
     let contents = include_str!("input.txt").lines();
     Ok(())
 }
-
 EOF
 )
 
 echo "Creating new main.rs file"
-echo -n "$STARTER_CODE" > "src/Day${DAY}/main.rs"
+echo "$STARTER_CODE" > "src/Day${DAY}/main.rs"
 
 echo "Adding new bin to Cargo.tml"
 NEW_TOML_BIN=$(cat <<EOF
@@ -31,10 +30,9 @@ NEW_TOML_BIN=$(cat <<EOF
 [[bin]]
 name = "day${DAY}"
 path = "src/Day${DAY}/main.rs"
-
 EOF
 )
 
-echo -n "$NEW_TOML_BIN" >> Cargo.toml
+echo "$NEW_TOML_BIN" >> Cargo.toml
 
 echo "Done!"
