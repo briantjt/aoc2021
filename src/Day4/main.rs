@@ -32,8 +32,6 @@ impl BingoBoard {
         [4, 9, 14, 19, 24],
     ];
 
-    const DIAGONAL_INDICES: [[usize; 5]; 2] = [[0, 6, 12, 18, 24], [4, 8, 12, 16, 20]];
-
     fn mark_num(&mut self, num: u8) {
         for pos in self.0.iter_mut() {
             if *pos == num {
@@ -47,10 +45,7 @@ impl BingoBoard {
         let vertical_check = Self::VERTICAL_INDICES
             .iter()
             .any(|indices| indices.iter().all(|&i| self.0[i] == 0));
-        let diagonal_check = Self::DIAGONAL_INDICES
-            .iter()
-            .any(|indices| indices.iter().all(|&i| self.0[i] == 0));
-        horizontal_check || vertical_check || diagonal_check
+        horizontal_check || vertical_check
     }
 
     fn count_score(&self, num: u8) -> u32 {
