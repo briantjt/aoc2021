@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+scan_fmt = "0.2.5"
 
 [[bin]]
 name = "day1"
@@ -22,3 +23,7 @@ path = "src/Day3/main.rs"
 [[bin]]
 name = "day4"
 path = "src/Day4/main.rs"
+
+[[bin]]
+name = "day5"
+path = "src/Day5/main.rs"
