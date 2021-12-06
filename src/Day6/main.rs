@@ -1,16 +1,8 @@
-fn count_fishes(fishes: &mut [u64; 9]) {
-    let mut next_day_fishes = [0u64; 9];
-    for day in 0..=8 {
-        let new_fishes = fishes[day];
-        if day == 0 {
-            next_day_fishes[8] += new_fishes;
-            next_day_fishes[6] += new_fishes;
-        } else {
-            next_day_fishes[day - 1] += new_fishes;
-        }
-    }
-    *fishes = next_day_fishes;
-}
+const NEW_FISH_HATCH_TIME: usize = 9;
+// New fishes get added 2 indexes (days) behind but it's easier to add positive integers
+// for modulo so take the inverse modulo:
+// (day-2) % 9 = (day % 9 + ((-2) % 9)) % 9 = (day % 9 + 7 % 9) % 9 = (day + 7) mod 9
+const NEW_FISH_OFFSET: usize = 7;
 
 fn main() -> std::io::Result<()> {
     let fishes: Vec<u8> = include_str!("input.txt")
@@ -18,17 +10,19 @@ fn main() -> std::io::Result<()> {
         .split(',')
         .filter_map(|s| s.parse().ok())
         .collect();
-    let mut num_fishes = [0u64; 9];
+    let mut num_fishes = [0u64; NEW_FISH_HATCH_TIME];
     for &f in fishes.iter() {
         num_fishes[f as usize] += 1;
     }
-    for _ in 0..80 {
-        count_fishes(&mut num_fishes);
+    for day in 0..80 {
+        num_fishes[(day + NEW_FISH_OFFSET) % NEW_FISH_HATCH_TIME] +=
+            num_fishes[day % NEW_FISH_HATCH_TIME];
     }
     let total_fishes: u64 = num_fishes.iter().sum();
     println!("{}", total_fishes);
-    for _ in 80..256 {
-        count_fishes(&mut num_fishes);
+    for day in 80..256 {
+        num_fishes[(day + NEW_FISH_OFFSET) % NEW_FISH_HATCH_TIME] +=
+            num_fishes[day % NEW_FISH_HATCH_TIME];
     }
     let total_fishes: u64 = num_fishes.iter().sum();
     println!("{}", total_fishes);
