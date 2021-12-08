@@ -96,7 +96,7 @@ fn map_sequence_to_digit(seqs: &[&str]) -> HashMap<String, u8> {
     let two = five_char_seqs.remove(two_pos);
     let five = five_char_seqs.remove(0);
 
-    HashMap::from_iter(vec![
+    HashMap::from_iter([
         (zero, 0),
         (one, 1),
         (two, 2),
