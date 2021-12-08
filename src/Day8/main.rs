@@ -86,7 +86,7 @@ fn map_sequence_to_digit(seqs: &[&str]) -> HashMap<String, u8> {
     let three_pos = five_char_seqs
         .iter()
         .position(|seq| one.chars().all(|c| seq.contains(c)))
-        .expect("Couldnt find digit 3");
+        .expect("Couldn't find digit 3");
     let three = five_char_seqs.remove(three_pos);
 
     let two_pos = five_char_seqs
