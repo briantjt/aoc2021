@@ -19,13 +19,9 @@ impl<'a> Cave<'a> {
 }
 use Cave::*;
 
-fn explore<'a>(
-    num_paths: &mut u64,
-    path: &mut Vec<Cave<'a>>,
-    visited: &mut BTreeSet<Cave<'a>>,
-    cave_map: &BTreeMap<Cave<'a>, Vec<Cave<'a>>>,
-    can_visit_twice: bool,
-) {
+fn explore(cave_map: &BTreeMap<Cave, Vec<Cave>>, can_visit_twice: bool) -> u64 {
+    let mut num_paths = 0;
+    let mut visited: BTreeSet<Cave> = BTreeSet::new();
     let mut to_explore_paths = vec![(Start, 0)];
     let mut cave_visited_twice = None;
     while !to_explore_paths.is_empty() {
@@ -34,32 +30,32 @@ fn explore<'a>(
         if current.0 == End || current.1 == neighbors.len() {
             // Reached the end or explored all neighbors
             if current.0 == End {
-                *num_paths += 1;
+                num_paths += 1;
             }
             if cave_visited_twice == Some(current.0) {
                 cave_visited_twice = None
             } else {
                 visited.remove(&current.0);
             }
-            path.pop();
             to_explore_paths.pop();
         } else {
             let next = neighbors[current.1];
             current.1 += 1;
-            if let Big(_) = next {
-                to_explore_paths.push((next, 0));
-                path.push(next);
-            } else if !visited.contains(&next) || (can_visit_twice && cave_visited_twice.is_none())
-            {
-                if visited.contains(&next) {
+            if let Small(_) = next {
+                let has_visited = visited.contains(&next);
+                let cannot_visit_again = !can_visit_twice || cave_visited_twice.is_some();
+                if has_visited {
+                    if cannot_visit_again {
+                        continue;
+                    }
                     cave_visited_twice = Some(next);
                 }
                 visited.insert(next);
-                to_explore_paths.push((next, 0));
-                path.push(next);
             }
+            to_explore_paths.push((next, 0));
         }
     }
+    num_paths
 }
 
 fn main() -> std::io::Result<()> {
@@ -90,15 +86,9 @@ fn main() -> std::io::Result<()> {
             cave_map.entry(cave2).or_insert_with(Vec::new).push(cave1);
         }
     }
-    let mut num_paths = 0u64;
-    let mut visited: BTreeSet<Cave> = BTreeSet::new();
-    let mut path = vec![Start];
-    explore(&mut num_paths, &mut path, &mut visited, &cave_map, false);
+    let num_paths = explore(&cave_map, false);
     println!("{}", num_paths);
-    num_paths = 0u64;
-    visited = BTreeSet::new();
-    path = vec![Start];
-    explore(&mut num_paths, &mut path, &mut visited, &cave_map, true);
+    let num_paths = explore(&cave_map, true);
     println!("{}", num_paths);
 
     Ok(())
