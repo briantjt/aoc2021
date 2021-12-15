@@ -23,7 +23,7 @@ fn main() -> std::io::Result<()> {
         .windows(2)
         .for_each(|pair| {
             *pair_count
-                .entry(((pair[0] as u16) << 8) as u16 + pair[1] as u16)
+                .entry(u16::from_be_bytes([pair[0], pair[1]]))
                 .or_insert(0) += 1
         });
     let pair_map: PairMap = contents
@@ -33,9 +33,9 @@ fn main() -> std::io::Result<()> {
         .filter_map(|line| {
             if let Ok((s, c)) = scan_fmt!(line, "{} -> {}", String, char) {
                 let mut chars = s.bytes();
-                let first = chars.next().unwrap() as u16;
-                let second = chars.next().unwrap() as u16;
-                Some(((first << 8) + second, c as u8))
+                let first = chars.next().unwrap();
+                let second = chars.next().unwrap();
+                Some((u16::from_be_bytes([first, second]), c as u8))
             } else {
                 None
             }
@@ -45,12 +45,10 @@ fn main() -> std::io::Result<()> {
         let mut next_pair_count = BTreeMap::new();
         for (pair, &count) in pair_count.iter() {
             let &element = pair_map.get(pair).unwrap();
-            *next_pair_count
-                .entry((pair & FIRST_CHAR_MASK) + element as u16)
-                .or_insert(0) += count;
-            *next_pair_count
-                .entry(((element as u16) << 8) + (pair & SECOND_CHAR_MASK))
-                .or_insert(0) += count;
+            let first_pair = (pair & FIRST_CHAR_MASK) + element as u16;
+            let second_pair = ((element as u16) << 8) + (pair & SECOND_CHAR_MASK);
+            *next_pair_count.entry(first_pair).or_insert(0) += count;
+            *next_pair_count.entry(second_pair).or_insert(0) += count;
             *char_count.entry(element).or_insert(0) += count;
         }
         (next_pair_count, char_count)
