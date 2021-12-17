@@ -8,6 +8,9 @@ edition = "2021"
 [dependencies]
 scan_fmt = "0.2.5"
 
+[profile.release]
+overflow-checks = true
+
 [[bin]]
 name = "day1"
 path = "src/Day1/main.rs"
@@ -71,3 +74,7 @@ path = "src/Day15/main.rs"
 [[bin]]
 name = "day16"
 path = "src/Day16/main.rs"
+
+[[bin]]
+name = "day17"
+path = "src/Day17/main.rs"
