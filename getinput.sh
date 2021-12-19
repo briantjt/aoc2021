@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DAY=$(date "+%-d")
-YEAR=$(date "+%Y")
+DAY=${1:-$(date "+%-d")}
+YEAR=${2:-$(date "+%Y")}
 URL="https://adventofcode.com/${YEAR}/day/${DAY}/input"
 COOKIE=$(tr -d "\n" < cookie.txt)
 echo "Getting input for day ${DAY}: ${URL}"
