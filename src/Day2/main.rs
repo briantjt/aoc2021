@@ -9,20 +9,11 @@ enum Direction {
 #[derive(Debug, Clone)]
 struct ParseDirectionErr;
 
+#[derive(Default)]
 struct Submarine {
     horizontal_pos: i32,
     vertical_pos: i32,
     aim_pos: i32,
-}
-
-impl Default for Submarine {
-    fn default() -> Self {
-        Self {
-            horizontal_pos: 0,
-            vertical_pos: 0,
-            aim_pos: 0,
-        }
-    }
 }
 
 impl FromStr for Direction {
